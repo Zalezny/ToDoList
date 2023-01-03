@@ -8,9 +8,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.net.URL;
 import java.util.ArrayList;
 
 
@@ -34,7 +37,20 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
     @Override
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
         String currentItem = itemList.get(position);
-        holder.textItem.setText(currentItem);
+        if(!isUrl(currentItem)) {
+            holder.textItem.setVisibility(View.VISIBLE);
+            holder.webView.setVisibility(View.GONE);
+            holder.textItem.setText(currentItem);
+        }
+        else {
+            holder.textItem.setVisibility(View.GONE);
+            holder.webView.setVisibility(View.VISIBLE);
+
+            holder.webView.setWebViewClient(new WebViewClient());
+            holder.webView.setInitialScale(90);
+            holder.webView.loadUrl(currentItem);
+        }
+
 
         holder.deleteItem.setOnClickListener(v -> {
 
@@ -59,13 +75,28 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
 
         private final TextView textItem;
         private final ImageView deleteItem;
+        private final WebView webView;
 
         public ItemViewHolder(@NonNull View itemView) {
             super(itemView);
 
             textItem = itemView.findViewById(R.id.textItem);
             deleteItem = itemView.findViewById(R.id.deleteItem);
+            webView = itemView.findViewById(R.id.webView);
 
+        }
+    }
+
+    private boolean isUrl(String url)
+    {
+
+        try {
+            new URL(url).toURI();
+            return true;
+        }
+
+        catch (Exception e) {
+            return false;
         }
     }
 

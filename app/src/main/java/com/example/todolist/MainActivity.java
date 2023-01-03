@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity implements onDeleteDialogListener {
     private EditText item;
@@ -17,6 +18,7 @@ public class MainActivity extends AppCompatActivity implements onDeleteDialogLis
 
     private ArrayList<String> itemList = new ArrayList<>();
 
+    private ArrayList<String> webList = new ArrayList<>();
 
     private RecyclerAdapter adapter;
 
@@ -24,6 +26,12 @@ public class MainActivity extends AppCompatActivity implements onDeleteDialogLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+        webList.add("https://us.123rf.com/450wm/nadzin/nadzin2006/nadzin200600003/nadzin200600003.jpg?ver=6");
+        webList.add("https://github.com/Zalezny");
+        webList.add("https://avatars.githubusercontent.com/u/65240240?v=4");
+
 
 
         item = findViewById(R.id.editText);
@@ -40,8 +48,16 @@ public class MainActivity extends AppCompatActivity implements onDeleteDialogLis
 
 
         add.setOnClickListener(v -> {
-            String itemName = item.getText().toString();
-            itemList.add(itemName);
+            if(itemList.size() % 2 == 0) {
+                String itemName = item.getText().toString();
+                itemList.add(itemName);
+            }
+            else {
+                //random generator
+                int index = new Random().nextInt(webList.size());
+                itemList.add(webList.get(index));
+            }
+
             item.setText("");
             FileHelper.writeData(itemList, getApplicationContext());
             adapter.notifyDataSetChanged();
