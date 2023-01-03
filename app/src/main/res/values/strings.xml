@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">To Do List</string>
+    <string name="ARGS_KEY_ALERT_DIALOG_FRAGMENT">position</string>
+    <string name="DELETE_ALERT_DIALOG_FRAGMENT_TAG">delete_fr_dialog_tag_123</string>
 </resources>

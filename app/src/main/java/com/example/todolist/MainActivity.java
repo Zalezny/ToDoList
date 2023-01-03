@@ -1,7 +1,6 @@
 package com.example.todolist;
 
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -10,7 +9,7 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements onDeleteDialogListener {
     EditText item;
     Button add;
     ListView listView;
@@ -46,22 +45,24 @@ public class MainActivity extends AppCompatActivity {
 
         listView.setOnItemClickListener((parent, view, position, id) -> {
 
-            AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
-            alert.setTitle("Delete");
-            alert.setMessage("Do you want to delete this item from the list?");
-            alert.setCancelable(false);
-            alert.setNegativeButton("No", (dialog, which) -> dialog.cancel());
-            alert.setPositiveButton("Yes", (dialog, which) -> {
-                itemList.remove(position);
-                arrayAdapter.notifyDataSetChanged();
-                FileHelper.writeData(itemList, getApplicationContext());
+            DeleteAlertDialogFragment alertDialogFr = new DeleteAlertDialogFragment();
 
-            });
+            Bundle args = new Bundle();
+            args.putInt(getString(R.string.ARGS_KEY_ALERT_DIALOG_FRAGMENT), position);
 
-            AlertDialog alertDialog = alert.create();
-            alertDialog.show();
+            alertDialogFr.setArguments(args);
+            alertDialogFr.show(getSupportFragmentManager(), getString(R.string.DELETE_ALERT_DIALOG_FRAGMENT_TAG));
 
         });
 
+
+
+    }
+
+    @Override
+    public void onDeleteDialogResult(boolean isDeleted, int position) {
+        itemList.remove(position);
+        arrayAdapter.notifyDataSetChanged();
+        FileHelper.writeData(itemList, getApplicationContext());
     }
 }
