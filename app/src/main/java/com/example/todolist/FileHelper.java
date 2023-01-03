@@ -1,6 +1,7 @@
 package com.example.todolist;
 
 import android.content.Context;
+import android.content.Intent;
 import android.widget.Toast;
 
 import java.io.FileInputStream;
@@ -16,16 +17,10 @@ public class FileHelper {
     public static final String FILENAME = "listinfo.dat";
 
     public static void writeData(ArrayList<String> item, Context context) {
-        try {
-            FileOutputStream fos = context.openFileOutput(FILENAME, Context.MODE_PRIVATE);
-            ObjectOutputStream oas = new ObjectOutputStream(fos);
-            oas.writeObject(item);
-            oas.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Intent intent = new Intent(context, DataService.class);
+        intent.putExtra(context.getString(R.string.INTENT_ITEM_LIST_KEY), item);
+        intent.setAction("ACTION_WRITE_DATA");
+        context.startService(intent);
     }
 
     @SuppressWarnings("unchecked")
