@@ -16,7 +16,7 @@ public class FileHelper {
 
     public static void writeData(ArrayList<String> item, Context context) {
         try {
-            FileOutputStream fos = context.openFileOutput(FILENAME,Context.MODE_PRIVATE);
+            FileOutputStream fos = context.openFileOutput(FILENAME, Context.MODE_PRIVATE);
             ObjectOutputStream oas = new ObjectOutputStream(fos);
             oas.writeObject(item);
             oas.close();
@@ -27,6 +27,7 @@ public class FileHelper {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public static ArrayList<String> readData(Context context) {
         ArrayList<String> itemList = null;
 
