@@ -1,6 +1,7 @@
 package com.example.todolist;
 
 import android.content.Context;
+import android.widget.Toast;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -36,6 +37,8 @@ public class FileHelper {
             ObjectInputStream ois = new ObjectInputStream(fis);
             itemList = (ArrayList<String>) ois.readObject();
         } catch (FileNotFoundException e) {
+
+            Toast.makeText(context,"The file " + FILENAME + " does not exist!", Toast.LENGTH_SHORT).show();
 
             itemList = new ArrayList<>();
 
