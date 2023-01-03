@@ -2,7 +2,10 @@ package com.example.todolist;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.widget.Toast;
+
+import com.google.gson.Gson;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -25,25 +28,19 @@ public class FileHelper {
 
     @SuppressWarnings("unchecked")
     public static ArrayList<String> readData(Context context) {
-        ArrayList<String> itemList = null;
 
-        try {
-            FileInputStream fis = context.openFileInput(FILENAME);
-            ObjectInputStream ois = new ObjectInputStream(fis);
-            itemList = (ArrayList<String>) ois.readObject();
-        } catch (FileNotFoundException e) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(
+                context.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+        String itemList = sharedPrefs.getString(
+                context.getString(R.string.shared_preferences_item_list_key), "");
 
-            Toast.makeText(context,"The file " + FILENAME + " does not exist!", Toast.LENGTH_SHORT).show();
-
-            itemList = new ArrayList<>();
-
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+        if(itemList.isEmpty()) {
+            Toast.makeText(context,"Zero save data", Toast.LENGTH_SHORT).show();
+            return new ArrayList<>();
         }
 
-        return itemList;
+        Gson gson = new Gson();
+        ArrayList<String> outputList = gson.fromJson(itemList, ArrayList.class);
+        return outputList;
     }
 }

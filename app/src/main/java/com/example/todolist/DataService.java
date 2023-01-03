@@ -3,9 +3,12 @@ package com.example.todolist;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.widget.Toast;
+
+import com.google.gson.Gson;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -16,6 +19,9 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 public class DataService extends Service {
+
+    SharedPreferences sharedPrefs;
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -25,6 +31,8 @@ public class DataService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+        sharedPrefs = getApplicationContext().getSharedPreferences(
+                getApplicationContext().getString(R.string.preference_file_key), Context.MODE_PRIVATE);
     }
 
     @Override
@@ -35,7 +43,8 @@ public class DataService extends Service {
             case "ACTION_WRITE_DATA":
                 ArrayList<String> itemList = (ArrayList<String>) intent.getSerializableExtra(
                                 getString(R.string.INTENT_ITEM_LIST_KEY));
-                writeData(itemList, getApplicationContext());
+                writeData(itemList);
+
                 stopSelf();
                 break;
 
@@ -54,17 +63,10 @@ public class DataService extends Service {
 
     private final String FILENAME = "listinfo.dat";
 
-    private void writeData(ArrayList<String> item, Context context) {
-        try {
-            FileOutputStream fos = context.openFileOutput(FILENAME, Context.MODE_PRIVATE);
-            ObjectOutputStream oas = new ObjectOutputStream(fos);
-            oas.writeObject(item);
-            oas.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    private void writeData(ArrayList<String> item) {
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putString(getString(R.string.shared_preferences_item_list_key),
+                new Gson().toJson(item)).apply();
 
     }
 
