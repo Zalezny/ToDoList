@@ -133,7 +133,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
         if (!isUrl(currentItem.text)) {
             holder.textItem.setVisibility(View.VISIBLE);
             holder.webView.setVisibility(View.GONE);
-            holder.textItem.setText(currentItem.text + " " + currentItem.date);
+            holder.textItem.setText(currentItem.text);
         } else {
             holder.textItem.setVisibility(View.GONE);
             holder.webView.setVisibility(View.VISIBLE);

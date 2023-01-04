@@ -1,9 +1,5 @@
 package com.example.todolist;
 
-import static com.example.todolist.SortHelper.sortAmount;
-
-import android.content.Intent;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import android.os.Bundle;
@@ -11,19 +7,10 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
-
-
-
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -147,11 +134,13 @@ public class MainActivity extends AppCompatActivity implements onDeleteDialogLis
                         d1 = format.parse(date1String);
                         d2 = format.parse(date2String);
 
-                        return d1.compareTo(d2);
+                        if (d1 != null) {
+                            return d1.compareTo(d2);
+                        }
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
-                    
+
                     return -1;
 
                 }
