@@ -1,25 +1,33 @@
 package com.example.todolist;
 
 import android.content.Intent;
+import java.text.SimpleDateFormat;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateFormat;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity implements onDeleteDialogListener {
     private EditText item;
 
 
-    private ArrayList<String> itemList = new ArrayList<>();
+    private ArrayList<ItemDataModel> itemList = new ArrayList<>();
 
-    private ArrayList<String> webList = new ArrayList<>();
+    private final ArrayList<String> webList = new ArrayList<>();
 
     private RecyclerAdapter adapter;
 
@@ -49,17 +57,25 @@ public class MainActivity extends AppCompatActivity implements onDeleteDialogLis
 
 
         add.setOnClickListener(v -> {
+            String text = "";
+
+            int id = itemList.size() + 1;
+
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
+            String date = format.format(Calendar.getInstance().getTime()).toString();
+
             if(itemList.size() % 2 == 0) {
-                String itemName = item.getText().toString();
-                itemList.add(itemName);
+                 text = item.getText().toString();
+
             }
             else {
                 //random generator
                 int index = new Random().nextInt(webList.size());
-                itemList.add(webList.get(index));
+                text = webList.get(index);
             }
 
             item.setText("");
+            itemList.add(new ItemDataModel(id, date, text, false));
             FileHelper.writeData(itemList, getApplicationContext());
             adapter.notifyDataSetChanged();
         });
@@ -67,7 +83,10 @@ public class MainActivity extends AppCompatActivity implements onDeleteDialogLis
 
     @Override
     public void onDeleteDialogResult(boolean isDeleted, int position) {
+        ItemDataModel oldItem = itemList.get(position);
+        ItemDataModel newItem = new ItemDataModel(oldItem.id, oldItem.date, oldItem.text, true);
         itemList.remove(position);
+        itemList.add(position, newItem);
         adapter.notifyDataSetChanged();
         FileHelper.writeData(itemList, getApplicationContext());
     }

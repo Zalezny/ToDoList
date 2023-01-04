@@ -19,10 +19,10 @@ import java.util.ArrayList;
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemViewHolder> {
 
-    private final ArrayList<String> itemList;
+    private final ArrayList<ItemDataModel> itemList;
     private final Context ctx;
 
-    public RecyclerAdapter(ArrayList<String> itemList, Context ctx) {
+    public RecyclerAdapter(ArrayList<ItemDataModel> itemList, Context ctx) {
         this.itemList = itemList;
         this.ctx = ctx;
     }
@@ -36,33 +36,39 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
 
     @Override
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
-        String currentItem = itemList.get(position);
-        if(!isUrl(currentItem)) {
-            holder.textItem.setVisibility(View.VISIBLE);
-            holder.webView.setVisibility(View.GONE);
-            holder.textItem.setText(currentItem);
+        ItemDataModel currentItem = itemList.get(position);
+        if(!currentItem.isDeleted) {
+            if (!isUrl(currentItem.text)) {
+                holder.textItem.setVisibility(View.VISIBLE);
+                holder.webView.setVisibility(View.GONE);
+                holder.textItem.setText(currentItem.text);
+            } else {
+                holder.textItem.setVisibility(View.GONE);
+                holder.webView.setVisibility(View.VISIBLE);
+
+                holder.webView.setWebViewClient(new WebViewClient());
+                holder.webView.setInitialScale(90);
+                holder.webView.loadUrl(currentItem.text);
+            }
+
+
+            holder.deleteItem.setOnClickListener(v -> {
+
+                DeleteAlertDialogFragment alertDialogFr = new DeleteAlertDialogFragment();
+
+                Bundle args = new Bundle();
+                args.putInt(ctx.getString(R.string.ARGS_KEY_ALERT_DIALOG_FRAGMENT), position);
+
+                alertDialogFr.setArguments(args);
+                alertDialogFr.show(((AppCompatActivity) ctx).getSupportFragmentManager(),
+                        ctx.getString(R.string.DELETE_ALERT_DIALOG_FRAGMENT_TAG));
+            });
         }
         else {
             holder.textItem.setVisibility(View.GONE);
-            holder.webView.setVisibility(View.VISIBLE);
-
-            holder.webView.setWebViewClient(new WebViewClient());
-            holder.webView.setInitialScale(90);
-            holder.webView.loadUrl(currentItem);
+            holder.deleteItem.setVisibility(View.GONE);
+            holder.webView.setVisibility(View.GONE);
         }
-
-
-        holder.deleteItem.setOnClickListener(v -> {
-
-            DeleteAlertDialogFragment alertDialogFr = new DeleteAlertDialogFragment();
-
-            Bundle args = new Bundle();
-            args.putInt(ctx.getString(R.string.ARGS_KEY_ALERT_DIALOG_FRAGMENT), position);
-
-            alertDialogFr.setArguments(args);
-            alertDialogFr.show(((AppCompatActivity)ctx).getSupportFragmentManager(),
-                    ctx.getString(R.string.DELETE_ALERT_DIALOG_FRAGMENT_TAG));
-        });
 
     }
 

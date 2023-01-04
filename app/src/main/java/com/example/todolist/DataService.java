@@ -41,9 +41,9 @@ public class DataService extends Service {
 
         switch (intent.getAction()) {
             case "ACTION_WRITE_DATA":
-                ArrayList<String> itemList = (ArrayList<String>) intent.getSerializableExtra(
+                String itemListJson = (String) intent.getStringExtra(
                                 getString(R.string.INTENT_ITEM_LIST_KEY));
-                writeData(itemList);
+                writeData(itemListJson);
 
                 stopSelf();
                 break;
@@ -63,10 +63,9 @@ public class DataService extends Service {
 
     private final String FILENAME = "listinfo.dat";
 
-    private void writeData(ArrayList<String> item) {
+    private void writeData(String itemJson) {
         SharedPreferences.Editor editor = sharedPrefs.edit();
-        editor.putString(getString(R.string.shared_preferences_item_list_key),
-                new Gson().toJson(item)).apply();
+        editor.putString(getString(R.string.shared_preferences_item_list_key), itemJson).apply();
 
     }
 
