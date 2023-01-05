@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
+
 public class DataService extends Service {
 
     SharedPreferences sharedPrefs;
@@ -28,16 +29,12 @@ public class DataService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
 
 
-        switch (intent.getAction()) {
-            case "ACTION_WRITE_DATA":
-                String itemListJson = (String) intent.getStringExtra(
-                                getString(R.string.INTENT_ITEM_LIST_KEY));
-                writeData(itemListJson);
+        if ("ACTION_WRITE_DATA".equals(intent.getAction())) {
+            String itemListJson = intent.getStringExtra(
+                    getString(R.string.INTENT_ITEM_LIST_KEY));
+            writeData(itemListJson);
 
-                stopSelf();
-                break;
-
-
+            stopSelf();
         }
 
         return super.onStartCommand(intent, flags, startId);
@@ -49,8 +46,6 @@ public class DataService extends Service {
     public void onDestroy() {
         super.onDestroy();
     }
-
-    private final String FILENAME = "listinfo.dat";
 
     private void writeData(String itemJson) {
         SharedPreferences.Editor editor = sharedPrefs.edit();

@@ -1,5 +1,6 @@
 package com.example.todolist;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -13,6 +14,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -80,7 +82,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
                 ItemDataModel newItem = new ItemDataModel(currentItem.getId(),currentItem.getDate(),
                         currentItem.getText(), false);
                 itemList.add(position, newItem);
-                notifyDataSetChanged();
+                notifyItemChanged(position);
+                FileHelper.writeData(itemList,ctx);
+                Toast.makeText(ctx, ctx.getString(R.string.reverted_deletion), Toast.LENGTH_SHORT).show();
             }
 
         });
@@ -111,6 +115,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void showDeleted(boolean isClick) {
         isVisible = isClick;
         notifyDataSetChanged();

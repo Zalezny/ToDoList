@@ -5,5 +5,10 @@
     <string name="INTENT_ITEM_LIST_KEY">item_list_key</string>
     <string name="preference_file_key">com.example.todolist.PREFERENCE_FILE_KEY</string>
     <string name="shared_preferences_item_list_key">com.example.todolist.item.list.key</string>
+    <string name="add_new_item">Add new item</string>
+    <string name="add">Add</string>
+    <string name="empty">empty</string>
+    <string name="delete_button_item">delete button item</string>
+    <string name="reverted_deletion">Reverted deletion</string>
 
 </resources>

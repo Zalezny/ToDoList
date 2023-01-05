@@ -2,6 +2,8 @@ package com.example.todolist;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -11,10 +13,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Random;
@@ -47,7 +49,10 @@ public class MainActivity extends AppCompatActivity implements onDeleteDialogLis
         Button add = findViewById(R.id.button);
 
 
+
+
         itemList = FileHelper.readData(this);
+        FileHelper.readData(this);
 
         RecyclerView recyclerView = findViewById(R.id.recyclerViewList);
         recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
@@ -57,12 +62,12 @@ public class MainActivity extends AppCompatActivity implements onDeleteDialogLis
 
 
         add.setOnClickListener(v -> {
-            String text = "";
+            String text;
 
             int id = itemList.size() + 1;
 
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
-            String date = format.format(Calendar.getInstance().getTime()).toString();
+            String date = format.format(Calendar.getInstance().getTime());
 
             if(itemList.size() % 2 == 0) {
                  text = item.getText().toString();
@@ -77,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements onDeleteDialogLis
             item.setText("");
             itemList.add(new ItemDataModel(id, date, text, false));
             FileHelper.writeData(itemList, getApplicationContext());
-            adapter.notifyDataSetChanged();
+            adapter.notifyItemInserted(itemList.size());
         });
     }
 
@@ -87,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements onDeleteDialogLis
         ItemDataModel newItem = new ItemDataModel(oldItem.id, oldItem.date, oldItem.text, true);
         itemList.remove(position);
         itemList.add(position, newItem);
-        adapter.notifyDataSetChanged();
+        adapter.notifyItemChanged(position);
         FileHelper.writeData(itemList, getApplicationContext());
     }
 
@@ -99,6 +104,7 @@ public class MainActivity extends AppCompatActivity implements onDeleteDialogLis
         return true;
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int choiceItem = item.getItemId();
@@ -106,44 +112,34 @@ public class MainActivity extends AppCompatActivity implements onDeleteDialogLis
         if(choiceItem == R.id.sort_amount)
         {
             // sort of length
-            Collections.sort(itemList, new Comparator<ItemDataModel>() {
-
-                @Override
-                public int compare(ItemDataModel o1, ItemDataModel o2) {
-                    return o1.getText().length() - o2.getText().length();
-                }
-            });
+            Collections.sort(itemList, (o1, o2) -> o1.getText().length() - o2.getText().length());
             adapter.notifyDataSetChanged();
         }
         if (choiceItem == R.id.sort_date)
         {
             // sort of length
-            Collections.sort(itemList, new Comparator<ItemDataModel>() {
-
-                @Override
-                public int compare(ItemDataModel o1, ItemDataModel o2) {
+            Collections.sort(itemList, (o1, o2) -> {
 
 
-                    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",Locale.US);
-                    String date1String = o1.getDate();
-                    String date2String = o2.getDate();
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",Locale.US);
+                String date1String = o1.getDate();
+                String date2String = o2.getDate();
 
-                    Date d1 = null;
-                    Date d2 = null;
-                    try {
-                        d1 = format.parse(date1String);
-                        d2 = format.parse(date2String);
+                Date d1;
+                Date d2;
+                try {
+                    d1 = format.parse(date1String);
+                    d2 = format.parse(date2String);
 
-                        if (d1 != null) {
-                            return d1.compareTo(d2);
-                        }
-                    } catch (ParseException e) {
-                        e.printStackTrace();
+                    if (d1 != null) {
+                        return d1.compareTo(d2);
                     }
-
-                    return -1;
-
+                } catch (ParseException e) {
+                    e.printStackTrace();
                 }
+
+                return -1;
+
             });
             adapter.notifyDataSetChanged();
         }
