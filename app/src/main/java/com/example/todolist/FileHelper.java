@@ -36,6 +36,5 @@ public class FileHelper {
         Gson gson = new Gson();
         Type itemListType = new TypeToken<ArrayList<ItemDataModel>>(){}.getType();
         return gson.fromJson(itemList, itemListType);
-
     }
 }

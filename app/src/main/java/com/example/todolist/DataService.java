@@ -5,8 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.IBinder;
-import android.support.annotation.Nullable;
 
+import androidx.annotation.Nullable;
 
 public class DataService extends Service {
 
@@ -33,7 +33,6 @@ public class DataService extends Service {
             String itemListJson = intent.getStringExtra(
                     getString(R.string.INTENT_ITEM_LIST_KEY));
             writeData(itemListJson);
-
             stopSelf();
         }
 
