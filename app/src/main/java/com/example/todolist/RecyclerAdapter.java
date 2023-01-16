@@ -17,7 +17,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Locale;
 
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemViewHolder> {
@@ -78,8 +81,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
             // undelete option
             else
             {
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
+                String newDate = format.format(Calendar.getInstance().getTime());
                 itemList.remove(position);
-                ItemDataModel newItem = new ItemDataModel(currentItem.getId(),currentItem.getDate(),
+                ItemDataModel newItem = new ItemDataModel(currentItem.getId(), newDate,
                         currentItem.getText(), false);
                 itemList.add(position, newItem);
                 notifyItemChanged(position);
